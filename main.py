@@ -7,6 +7,9 @@ app = FastAPI()
 
 # In-memory task results (optional: replace with Redis or DB)
 summaries = {}
+@app.get("/")
+def health_check():
+    return {"status": "alive", "docs": "/docs"}
 
 @app.post("/summarize/")
 async def summarize(text: str, background_tasks: BackgroundTasks):
