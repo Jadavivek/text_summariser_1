@@ -10,6 +10,9 @@ summaries = {}
 @app.get("/")
 def health_check():
     return {"status": "alive", "docs": "/docs"}
+@app.api_route("/", methods=["GET", "HEAD"])
+async def health_check(request: Request):
+    return {"status": "alive", "docs": "/docs"}
 
 @app.post("/summarize/")
 async def summarize(text: str, background_tasks: BackgroundTasks):
