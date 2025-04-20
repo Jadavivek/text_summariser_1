@@ -1,5 +1,5 @@
 from fastapi import FastAPI, BackgroundTasks
-from summarizer import summarize_text
+from tasks import summarize_text
 import uuid
 
 app = FastAPI()
