@@ -1,25 +1,32 @@
+# tasks.py
+import os
+import aiohttp
+import redis.asyncio as redis
 
-from celery import Celery
-import requests
-import os 
-redis_url = os.environ.get("REDIS_URL")
-
-app = Celery('tasks', broker=redis_url, backend=redis_url)
-
-cache = {}
 GEMINI_API_URL = "https://api.gemini.com/summarize"
-GEMINI_API_KEY = "AIzaSyCjbPgV1PRpRksTMt0MiW884pRe2bYExtA"
-def summarize_text(text):
-    if text in cache:
-        return cache[text]
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Use Redis for cache
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379")
+r = redis.from_url(redis_url, decode_responses=True)
+
+async def summarize_text(text: str) -> str:
+    # Check Redis cache
+    cached_summary = await r.get(text)
+    if cached_summary:
+        return cached_summary
+
     headers = {
         "Authorization": f"Bearer {GEMINI_API_KEY}",
         "Content-Type": "application/json"
     }
-    response = requests.post(GEMINI_API_URL, json={"text": text}, headers=headers)
-    if response.status_code == 200:
-        summary = response.json().get("summary")
-        cache[text] = summary
-        return summary
-    else:
-        raise Exception(f"Gemini API failed: {response.status_code} - {response.text}")
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(GEMINI_API_URL, json={"text": text}, headers=headers) as resp:
+            if resp.status == 200:
+                data = await resp.json()
+                summary = data.get("summary")
+                await r.set(text, summary)  # Cache result
+                return summary
+            else:
+                raise Exception(f"Gemini API failed: {resp.status} - {await resp.text()}")
