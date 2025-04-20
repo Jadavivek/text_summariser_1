@@ -1,11 +1,11 @@
 # main.py
 from fastapi import FastAPI, BackgroundTasks
-from summarizer import summarize_text
+from tasks import summarize_text
 import uuid
 
 app = FastAPI()
 
-# Store summaries temporarily in-memory (Redis used in summarizer)
+# In-memory task results (optional: replace with Redis or DB)
 summaries = {}
 
 @app.post("/summarize/")
