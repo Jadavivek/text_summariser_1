@@ -1,9 +1,10 @@
 
 from celery import Celery
 import requests
-app = Celery('tasks',
-             broker='rediss://:password@your_redis_internal_url:6379/0',
-             backend='rediss://:password@your_redis_internal_url:6379/0')
+import os 
+redis_url = os.environ.get("REDIS_URL")
+
+app = Celery('tasks', broker=redis_url, backend=redis_url)
 
 cache = {}
 GEMINI_API_URL = "https://api.gemini.com/summarize"
