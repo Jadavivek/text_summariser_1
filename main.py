@@ -1,15 +1,16 @@
 # main.py
 from fastapi import FastAPI, BackgroundTasks
 from summarizer import summarize_text
+import uuid
 
 app = FastAPI()
 
-# Store summaries temporarily (replace with DB in production)
+# Store summaries temporarily in-memory (Redis used in summarizer)
 summaries = {}
 
 @app.post("/summarize/")
 async def summarize(text: str, background_tasks: BackgroundTasks):
-    task_id = str(uuid.uuid4())  # use UUID for tracking
+    task_id = str(uuid.uuid4())
     summaries[task_id] = "Processing..."
 
     async def process():
