@@ -1,9 +1,9 @@
-
 # 📝 Text Summariser API
 
 This is a FastAPI-based asynchronous text summarization API that uses Celery and Redis for background processing. The app is deployed on **Render** and provides endpoints for submitting long texts and retrieving concise summaries.
 
 ### 🚀 Live Demo
+
 You can test the API live via the FastAPI Swagger UI here:  
 👉 [https://text-summariser-1-1.onrender.com/docs](https://text-summariser-1-1.onrender.com/docs)
 
@@ -64,9 +64,11 @@ uvicorn tasks:app --host 0.0.0.0 --port 10000
 ## 📌 API Endpoints
 
 ### ➕ `POST /summarize/`
+
 Submit a text to summarize.
 
 **Request:**
+
 ```json
 {
   "text": "Your long text here..."
@@ -74,6 +76,7 @@ Submit a text to summarize.
 ```
 
 **Response:**
+
 ```json
 {
   "task_id": "e67a1bb3-cb4a-4f3f-b172-xxxxxxxxxxxx"
@@ -82,10 +85,12 @@ Submit a text to summarize.
 
 ---
 
-###  `GET /result/{task_id}`
+### `GET /result/{task_id}`
+
 Get the summary using the task ID.
 
 **Example Response:**
+
 ```json
 {
   "summary": "Your summarized content goes here."
@@ -94,10 +99,12 @@ Get the summary using the task ID.
 
 ---
 
-##  File Structure
+## File Structure
 
 ```
-├── tasks.py             # FastAPI app + Celery tasks
+├── .env
+├── main.py              # Environment variables
+├── tasks.py             # FastAPI app
 ├── requirements.txt     # Project dependencies
 ├── start.sh             # Render startup script
 ├── README.md            # Project documentation
@@ -105,20 +112,22 @@ Get the summary using the task ID.
 
 ---
 
-##  Deployment (on Render)
+## Deployment (on Render)
 
-###  Web Service
+### Web Service
+
 1. Create a new Web Service on [Render](https://render.com/)
 2. Set the start command to:
+
 ```bash
 ./start.sh
 ```
-3. Use `tasks.py` as the entry point (your main FastAPI app).
 
+3. Use `tasks.py` as the entry point (your main FastAPI app).
 
 ---
 
-##  Contact
+## Contact
 
 Created by [**Jada Vivek**](https://github.com/Jadavivek)  
 Feel free to contribute, fork, or raise issues!
